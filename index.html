@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>史努比的屋頂預報</title>
     <link rel="icon" type="image/png" href="https://i.imgur.com/g8XgW7Z.png">
     <link rel="apple-touch-icon" href="https://i.imgur.com/g8XgW7Z.png">
@@ -16,13 +16,16 @@
     <style>
         /* 史努比風格調色盤 */
         :root {
-            --snoopy-red: #E73333; /* 史努比紅色 */
-            --snoopy-white: #FFFFFF; /* 白色 (背景/文字) */
-            --snoopy-yellow: #FFDB58; /* 查理布朗 T 恤黃 */
-            --snoopy-dark: #333333; /* 黑色 (邊框/文字) */
-            --snoopy-accent: #4FB5D9; /* 淺藍 (對話框) */
-            --snoopy-cream-bg: #F4F4E5; /* 輕微米白底色 */
-            --snoopy-shadow: #8A887A; /* 柔和陰影 */
+            --snoopy-red: #E73333;
+            --snoopy-white: #FFFFFF;
+            --snoopy-yellow: #FFDB58;
+            --snoopy-dark: #333333;
+            --snoopy-accent: #4FB5D9;
+            --snoopy-cream-bg: #F4F4E5;
+            --snoopy-shadow: #8A887A;
+            /* RWD 調整：極窄手機邊距 */
+            --padding-mobile: 15px; 
+            --padding-desktop: 20px;
         }
 
         * {
@@ -33,16 +36,18 @@
         }
 
         body {
-            /* 史努比風格字體 */
+            /* 統一字體，Klee One 為首選，更可愛 */
             font-family: 'Klee One', 'Zen Maru Gothic', sans-serif;
             background-color: var(--snoopy-cream-bg);
-            /* 經典漫畫風斜紋背景 (白色底 + 黑色/深灰斜線) */
             background-image:
                 repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(0, 0, 0, 0.1) 15px, rgba(0, 0, 0, 0.1) 30px);
             min-height: 100vh;
             color: var(--snoopy-dark);
-            overflow-x: hidden;
+            /* 確保 RWD 不會出現水平捲動 */
+            overflow-x: hidden; 
             padding-bottom: 30px;
+            /* 統一文字粗細，讓版面更整齊 */
+            font-weight: 400; 
         }
 
         /* 頂部狀態列 */
@@ -50,8 +55,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            /* 輕微的背景虛化 */
+            /* RWD: 使用變量 */
+            padding: 15px var(--padding-mobile);
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(5px);
             position: sticky;
@@ -65,9 +70,8 @@
             color: var(--snoopy-dark);
             padding: 5px 15px;
             border-radius: 20px;
-            font-weight: 600;
+            font-weight: 600; /* 粗一點 */
             font-size: 1.1rem;
-            /* 漫畫手寫體風格傾斜 */
             transform: rotate(-2deg);
             border: 3px solid var(--snoopy-dark);
             box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
@@ -84,7 +88,8 @@
         }
 
         .container {
-            padding: 20px;
+            /* RWD: 使用變量 */
+            padding: 20px var(--padding-mobile);
             max-width: 600px;
             margin: 0 auto;
         }
@@ -92,24 +97,23 @@
         /* === 核心：今日焦點卡片 (像史努比的屋頂) === */
         .hero-card {
             background: var(--snoopy-white);
-            /* 模仿史努比房子的輪廓 */
             border-radius: 35px;
             padding: 30px 25px;
             text-align: center;
-            /* 強烈的黑色外框 */
             box-shadow: 8px 8px 0 var(--snoopy-dark);
             border: 4px solid var(--snoopy-dark);
             margin-bottom: 30px;
             position: relative;
+            /* RWD: 確保不會溢出 */
+            min-width: 0; 
         }
 
-        /* 史努比風格的對話氣泡標籤 */
         .hero-period {
             position: absolute;
             top: -20px;
             left: 50%;
             transform: translateX(-50%) rotate(3deg);
-            background: var(--snoopy-red); /* 紅色屋頂/帽子 */
+            background: var(--snoopy-red);
             color: var(--snoopy-white);
             padding: 5px 20px;
             border-radius: 20px;
@@ -118,6 +122,7 @@
             border: 3px solid var(--snoopy-dark);
             box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
             z-index: 5;
+            white-space: nowrap; /* 確保標籤不被斷行 */
         }
 
         .hero-temp-container {
@@ -137,14 +142,8 @@
         }
 
         @keyframes bounce {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         .hero-temp {
@@ -156,45 +155,86 @@
 
         .hero-desc {
             font-size: 1.6rem;
-            /* 史努比漫畫風格的粗體文字 */
+            font-weight: 600;
             color: var(--snoopy-dark);
             margin-bottom: 20px;
-            font-weight: 600;
+            /* RWD: 允許長文字斷行 */
+            word-break: break-word; 
         }
 
         /* === 快速建議區 (漫畫格子) === */
         .advice-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            /* RWD: 確保在 320px 螢幕下至少能有空間 */
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
+            gap: 10px; /* RWD: 縮小間距 */
             margin-top: 20px;
             padding-top: 20px;
             border-top: 2px dashed var(--snoopy-dark);
         }
+        
+        /* 新增的飲食建議卡片樣式 */
+        .advice-grid.meal-advice {
+            grid-template-columns: 1fr; /* 飲食建議使用單欄 */
+            margin-top: 15px;
+            border-top: none;
+            padding-top: 0;
+        }
+        
+        .meal-advice .advice-item {
+             background: var(--snoopy-accent); 
+             color: var(--snoopy-white);
+             padding: 15px;
+             border: 3px solid var(--snoopy-dark);
+             box-shadow: 4px 4px 0 var(--snoopy-red); /* 用紅色當陰影 */
+             text-align: left;
+             align-items: flex-start;
+        }
+        
+        .meal-advice .advice-text {
+            color: var(--snoopy-white);
+            font-size: 1.4rem;
+        }
+        
+        .meal-advice .advice-icon {
+            font-size: 2rem;
+            margin-right: 10px;
+        }
+        
+        .meal-advice .meal-title {
+            font-weight: 900;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+        }
+
 
         .advice-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: var(--snoopy-yellow); /* 內框使用查理布朗黃 */
+            background: var(--snoopy-yellow);
             padding: 15px 10px;
             border-radius: 20px;
             border: 3px solid var(--snoopy-dark);
             box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+            min-width: 0;
         }
 
         .advice-icon {
-            /* 替換為更中性/可愛的圖示 */
             font-size: 2.2rem;
             margin-bottom: 5px;
         }
 
         .advice-text {
-            font-size: 1.5rem;
+            /* RWD: 允許文字縮小 */
+            font-size: 1.3rem;
             font-weight: 600;
             color: var(--snoopy-dark);
             margin: 5px 0;
             line-height: 1.2;
+            word-break: break-word;
+            text-align: center;
         }
 
         /* === 稍後預報：橫向滑動區 === */
@@ -221,7 +261,8 @@
         }
 
         .mini-card {
-            min-width: 130px;
+            /* RWD: 確保至少能顯示兩欄 (320px/130px*2+gap) */
+            min-width: 130px; 
             background: var(--snoopy-white);
             border-radius: 25px;
             padding: 20px 15px;
@@ -230,31 +271,7 @@
             box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
             flex-shrink: 0;
         }
-
-        .mini-time {
-            background: var(--snoopy-accent); /* 淺藍色 */
-            color: white;
-            padding: 3px 10px;
-            border-radius: 10px;
-            font-size: 0.8rem;
-            display: inline-block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            border: 2px solid var(--snoopy-dark);
-        }
-
-        .mini-icon {
-            font-size: 2.5rem;
-            margin: 5px 0;
-        }
-
-        .mini-temp {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--snoopy-dark);
-        }
-
-        /* Loading 畫面 */
+        /* ... 省略 Loading 畫面 CSS ... */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -277,12 +294,27 @@
              animation: bounce 2s infinite;
              filter: drop-shadow(0 4px 0 rgba(0, 0, 0, 0.2));
         }
+        /* 桌面版 RWD 調整 */
+        @media (min-width: 768px) {
+            .container {
+                padding: 30px var(--padding-desktop);
+            }
+            .status-bar {
+                padding: 15px var(--padding-desktop);
+            }
+            .advice-grid {
+                 gap: 15px;
+            }
+            .advice-text {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div id="loading" class="loading-screen">
-        <div class="snoopy-icon">🐶</div>
+        <div class="snoopy-icon">🐾</div>
         <p style="color: var(--snoopy-dark); font-weight: 600; margin-top: 20px;">史努比正在屋頂上觀測雲朵...</p>
     </div>
     <div class="status-bar">
@@ -303,10 +335,8 @@
 
     <script>
         const API_URL = "https://cwaweather3120.zeabur.app/api/weather/Hsinchu";
-        
-        // 替換主畫面圖示為 PNG URL
         const SNOOPY_WEATHER_ICON_URL = "https://i.imgur.com/Qk7xH2j.png";
-        
+
         // 史努比風格 Emoji 替換
         function getWeatherIcon(weather) {
             // 使用更手繪/可愛風格的 Emoji
@@ -356,16 +386,57 @@
             if (hour >= 18 && hour < 23) return "晚餐時段";
             return "深夜秘密";
         }
+        
+        // 史努比的食物建議（糊塗塌客推薦菜單）
+        function getMealAdvice(period) {
+            const meals = {
+                "早晨時光": {
+                    icon: "🍞",
+                    title: "糊塗塌客早餐推薦",
+                    options: ["培根蛋吐司", "花生醬三明治", "熱牛奶與餅乾", "美式鬆餅"]
+                },
+                "午餐時間": {
+                    icon: "🍔",
+                    title: "史努比午餐精選",
+                    options: ["特大份漢堡", "義大利麵", "熱狗配可樂", "查理布朗特製披薩"]
+                },
+                "下午茶點": {
+                    icon: "☕",
+                    title: "下午茶時光",
+                    options: ["冰淇淋聖代", "熱可可與甜甜圈", "多層蛋糕", "咖啡與小餅乾"]
+                },
+                "晚餐時段": {
+                    icon: "🍖",
+                    title: "晚餐計畫",
+                    options: ["烤肉大餐", "豪華燉菜", "奶油濃湯", "香腸與馬鈴薯泥"]
+                }
+            };
+
+            const mealData = meals[period] || meals["午餐時間"];
+            // 隨機選一個食物
+            const recommendation = mealData.options[Math.floor(Math.random() * mealData.options.length)];
+            
+            return {
+                icon: mealData.icon,
+                title: mealData.title,
+                text: recommendation
+            };
+        }
+
 
         function renderWeather(data) {
             const forecasts = data.forecasts;
             const current = forecasts[0];
             const others = forecasts.slice(1);
 
+            // 獲取當前時段
+            const period = getTimePeriod(current.startTime);
+
             // 1. 渲染 Hero Card (主畫面)
             const advice = getAdvice(current.rain, current.maxTemp);
-            const period = getTimePeriod(current.startTime);
             const avgTemp = Math.round((parseInt(current.maxTemp) + parseInt(current.minTemp)) / 2);
+
+            const mealAdvice = getMealAdvice(period);
 
             document.getElementById('heroCard').innerHTML = `
                 <div class="hero-card">
@@ -374,24 +445,37 @@
                         <img src="${SNOOPY_WEATHER_ICON_URL}" alt="史努比風格天氣圖示" class="hero-icon">
                         <div class="hero-temp">${avgTemp}°</div>
                     </div>
-                    <div class="hero-desc">史努比預報：${current.weather}</div>
+                    <div class="hero-desc">史努比預報：**${current.weather}**</div>
                     
                     <div class="advice-grid">
                         <div class="advice-item">
                             <div class="advice-icon">${advice.rainIcon}</div>
                             <div class="advice-text">${advice.rainText}</div>
-                            <div style="font-size:0.8rem; color:var(--snoopy-dark);">降雨率 ${current.rain} %</div>
+                            <div style="font-size:0.8rem; color:var(--snoopy-dark);">降雨率 **${current.rain} %**</div>
                         </div>
                         <div class="advice-item">
                             <div class="advice-icon">${advice.clothIcon}</div>
                             <div class="advice-text">${advice.clothText}</div>
-                            <div style="font-size:0.8rem; color:var(--snoopy-dark);">最高溫 ${current.maxTemp}°</div>
+                            <div style="font-size:0.8rem; color:var(--snoopy-dark);">最高溫 **${current.maxTemp}°**</div>
                         </div>
+                    </div>
+                    
+                    <div class="advice-grid meal-advice">
+                         <div class="advice-item">
+                              <div style="display: flex; align-items: center; width: 100%;">
+                                 <div class="advice-icon">🍴</div>
+                                 <div>
+                                     <div class="meal-title">${mealAdvice.title}</div>
+                                     <div class="advice-text">${mealAdvice.icon} **${mealAdvice.text}**</div>
+                                     <div style="font-size:0.8rem; font-weight: 600;">**史努比說：「嘿嘿~ 今天就吃這個吧！」**</div>
+                                 </div>
+                             </div>
+                         </div>
                     </div>
                 </div>
             `;
 
-            // 2. 渲染稍後預報 (包含明天判斷)
+            // 2. 渲染稍後預報
             const scrollContainer = document.getElementById('futureForecasts');
             scrollContainer.innerHTML = '';
 
@@ -409,8 +493,8 @@
                     <div class="mini-card">
                         <div class="mini-time">${p}</div>
                         <div class="mini-icon">${getWeatherIcon(f.weather)}</div>
-                        <div class="mini-temp">${f.minTemp}° ~ ${f.maxTemp}°</div>
-                        <div style="font-size:0.8rem; color:var(--snoopy-dark); margin-top:5px;">💧 ${f.rain}%</div>
+                        <div class="mini-temp">**${f.minTemp}° ~ ${f.maxTemp}°**</div>
+                        <div style="font-size:0.8rem; color:var(--snoopy-dark); margin-top:5px;">💧 **${f.rain}%**</div>
                     </div>
                 `;
             });
@@ -427,19 +511,14 @@
 
         async function fetchWeather() {
             try {
-                // 1. 定義「最低等待時間」：1500 毫秒 (1.5秒)
+                // ... 省略 fetch 邏輯 ...
                 const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
-
-                // 2. 定義「抓取資料」的工作
                 const fetchPromise = fetch(API_URL).then(res => res.json());
-
-                // 3. Promise.all 會等待「兩個都完成」才會往下走
                 const [_, json] = await Promise.all([delayPromise, fetchPromise]);
 
                 if (json.success) {
                     renderWeather(json.data);
 
-                    // 資料處理好後，隱藏 Loading，顯示主畫面
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('mainContent').style.display = 'block';
                 } else {
@@ -447,7 +526,6 @@
                 }
             } catch (e) {
                 console.error(e);
-                // 史努比風格的錯誤提示
                 alert("天氣資料讀取失敗，史努比的屋頂被暴風吹走了！");
             }
         }
